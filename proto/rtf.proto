@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+service RTF
+{
+    // accept a stream of RTFStatement that define the Python function body.
+    // Returns a stream of RTFResponse.
+    rpc DefineAndCall(stream RTFStatement) returns (stream RTFResponse);
+}
+
+message RTFStatement
+{
+    // ID of the client
+    string uuid = 1;
+    // ID of the current statement
+    int64 node_id = 2;
+    // ID of the parent of this statement, if any
+    int64 parent_id = 3;
+    // Ordered list of the contexts, every context has a ID
+    // The context are created by the python statement `with`
+    repeated int64 contexts = 4;
+    // The statement sent
+    string stmt = 5;
+}
+
+message RTFResponse
+{
+    // The ID of the node that has been executed
+    // to generate the response.
+    int64 node_id = 1;
+
+    // Execxution status
+    bool status = 2;
+
+    // Captured Standard Output
+    string stdout = 3;
+
+    // The response value
+    bytes body = 4;
+}
